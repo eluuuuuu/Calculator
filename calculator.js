@@ -1,55 +1,86 @@
 
-class calculator{
 
+// HISTORY FUNCTIONS TO RETRIEVE AND DISPLAY THE USER'S INPUT
+function getHistory() {
+    return document.getElementById("history-value").innerText;
+}
 
-    constructor(previousvalue, currentvalue){
-        this.previousvalue = previousvalue
-        this.currentvalue = currentvalue
+function printHistory(num) {
+    document.getElementById("history-value").innerText=num;
+}
 
+// OUTPUT FUNCTIONS TO RETRIEVE AND DISPLAY THE USER'S RESULTS
+function getOutput() {
+    return document.getElementById("output-value").innerText;
+}
+
+function printOutput(num) {
+    if(num=="") {
+        document.getElementById("output-value").innerText=num;
+    } else {
+        document.getElementById("output-value").innerText=getFormattedNumber(num);
+    }         
+} 
+
+function getFormattedNumber(num) {
+    if(num == "-") {
+        return "";
     }
-
-clear(){
-
-    this.currentvalue = ""
-    this.previousvalue = ""
-    this.operation = undefined
-
+    var n = Number(num);
+    var value = n.toLocaleString("en");
+    return value;
 }
 
-
-delete(){
-
-
+// FUNCTION TO CLEAR COMAS IN OUTPUT FIELD 
+function reverseNumberFormat(num) {
+    return Number(num.replace(/,/g,''));
 }
 
-append(number){
-
-
+var operator = document.getElementsByClassName("operator");
+for(var i = 0; i < operator.length; i++) {
+    operator[i].addEventListener("click", function() {
+        if(this.id == "clear") {
+            printHistory("");
+            printOutput("");
+        } else if(this.id == "backspace") {
+            var output = reverseNumberFormat(getOutput()).toString();
+            if(output) { // if output has a value
+                output = output.substr(0,output.length-1);
+                printOutput(output);
+            }
+        } else {
+            var output = getOutput();
+            var history = getHistory();
+            if(output == "" && history != "") {
+                if(isNaN(history[history.length-1])) {
+                    history = history.substr(0, history.length-1);
+                }
+            }
+            if(output != "" || history != "") {
+                output = output == ""?
+                output:reverseNumberFormat(output);
+                history = history+output;
+                if(this.id == "=") {
+                    var result = eval(history);
+                    printOutput(result);
+                    printHistory("");
+                } else {
+                    history = history + this.id;
+                    printHistory(history);
+                    printOutput("");
+                }
+            }
+        }
+    });
 }
 
-chooseoperation(operation){
-
-
-
+var number = document.getElementsByClassName("number");
+for(var i = 0; i < number.length; i++) {
+    number[i].addEventListener("click", function() {
+        var output = reverseNumberFormat(getOutput());
+        if(output != NaN) { // if output is a number
+            output = output + this.id;
+            printOutput(output);
+        }
+    });
 }
-
-compute(){
-
-
-}
-
-updateDisplay(){
-
-
-}
-}
-
-
-
-const numberbuttons = document.querySelectorAll("[data-number");
-const operationbuttons = document.querySelectorAll("[data-operations");
-const equalsbutton = document.querySelector(["data-equals"])
-const deletebutton = document.querySelector(["data-delete"])
-const previousvalue = document.querySelector(["data-previous"])
-const currentvalue = document.querySelector(["data-previous"])
-const clear = document.querySelector(["data-clear"])
